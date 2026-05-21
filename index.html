@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
   <title>Transparence Lending Solutions LLC | TPLS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,6 +12,7 @@
     rel="stylesheet"
   >
   <style>
+    /* ─── RESET & TOKENS ─── */
     *,
     *::before,
     *::after {
@@ -19,18 +21,41 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #050505;
+      --bg-soft: #0b0b0b;
+      --bg-card: #101010;
+      --line: rgba(192, 192, 192, 0.16);
+      --line-strong: rgba(192, 192, 192, 0.32);
+      --accent: #c0c0c0;
+      --accent-bright: #ffffff;
+      --text: #f5f5f5;
+      --text-soft: #d7d7d7;
+      --text-muted: #bfbfbf;
+      --max: 1200px;
+      --pad-x: 20px;
+      --radius: 14px;
+      --radius-lg: 18px;
+      --ease: 0.3s ease;
+    }
+
     html {
       scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
       font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      background: #050505;
-      color: #f5f5f5;
-      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
+    }
+
+    body.menu-open {
+      overflow: hidden;
     }
 
     h1, h2, h3, h4 {
@@ -44,62 +69,63 @@
     }
 
     a:focus-visible,
+    button:focus-visible,
     .btn:focus-visible {
-      outline: 2px solid #c0c0c0;
+      outline: 2px solid var(--accent);
       outline-offset: 3px;
     }
 
-    img {
-      display: block;
-      max-width: 100%;
-    }
+    img { display: block; max-width: 100%; }
 
     .container {
       width: 100%;
-      max-width: 1200px;
+      max-width: var(--max);
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 var(--pad-x);
     }
 
-    /* ─── HEADER ─── */
+    /* ─────────────────────────────
+       HEADER + MOBILE HAMBURGER
+       ───────────────────────────── */
     header {
       position: fixed;
       top: 0;
       width: 100%;
       z-index: 1000;
       background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(192, 192, 192, 0.15);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
     }
 
     nav {
-      height: 76px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
+      gap: 16px;
     }
 
     .logo {
       font-family: "Manrope", sans-serif;
-      font-size: 1.2rem;
+      font-size: 1.05rem;
       font-weight: 800;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       color: #ffffff;
       white-space: nowrap;
     }
 
-    .logo span {
-      color: #c0c0c0;
+    .logo-full {
+      color: var(--accent);
       font-weight: 400;
+      display: none;
     }
 
     .nav-links {
-      display: flex;
+      display: none;
       gap: 28px;
       font-size: 0.9rem;
-      color: #d7d7d7;
+      color: var(--text-soft);
     }
 
     .nav-links a {
@@ -107,16 +133,142 @@
     }
 
     .nav-links a:hover {
-      color: #ffffff;
+      color: var(--accent-bright);
     }
 
-    /* ─── HERO ─── */
-    .hero {
-      min-height: 100vh;
+    /* Hamburger button */
+    .nav-toggle {
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-toggle:hover { border-color: var(--line-strong); background: rgba(255,255,255,0.04); }
+
+    .nav-toggle .bars {
+      width: 18px;
+      height: 14px;
+      position: relative;
+    }
+
+    .nav-toggle .bars::before,
+    .nav-toggle .bars::after,
+    .nav-toggle .bars span {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: currentColor;
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.2s ease, top 0.3s ease;
+    }
+    .nav-toggle .bars::before { top: 0; }
+    .nav-toggle .bars span    { top: 6px; }
+    .nav-toggle .bars::after  { top: 12px; }
+
+    body.menu-open .nav-toggle .bars::before { top: 6px; transform: rotate(45deg); }
+    body.menu-open .nav-toggle .bars span    { opacity: 0; }
+    body.menu-open .nav-toggle .bars::after  { top: 6px; transform: rotate(-45deg); }
+
+    /* Mobile drawer */
+    .menu-drawer {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(5, 5, 5, 0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--line);
+      transform: translateY(-110%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 999;
+      padding: 24px var(--pad-x) 32px;
+      box-shadow: 0 24px 50px rgba(0,0,0,0.4);
+    }
+
+    body.menu-open .menu-drawer {
+      transform: translateY(0);
+    }
+
+    .menu-drawer a.menu-link {
       display: flex;
       align-items: center;
-      padding-top: 90px;
-      padding-bottom: 60px;
+      justify-content: space-between;
+      padding: 18px 4px;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: var(--text);
+      border-bottom: 1px solid var(--line);
+      transition: color 0.2s ease, padding-left 0.2s ease;
+    }
+
+    .menu-drawer a.menu-link:hover,
+    .menu-drawer a.menu-link:active {
+      color: var(--accent-bright);
+      padding-left: 8px;
+    }
+
+    .menu-drawer a.menu-link::after {
+      content: "→";
+      font-weight: 300;
+      color: var(--accent);
+      transition: transform 0.2s ease;
+    }
+
+    .menu-drawer a.menu-link:hover::after { transform: translateX(4px); }
+
+    .menu-drawer .menu-cta {
+      margin-top: 22px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+      background: var(--text);
+      color: var(--bg);
+      border-radius: 999px;
+      font-weight: 700;
+      font-family: "Inter", sans-serif;
+    }
+
+    /* Backdrop behind drawer */
+    .menu-backdrop {
+      position: fixed;
+      inset: 64px 0 0 0;
+      background: rgba(0,0,0,0.55);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 998;
+    }
+
+    body.menu-open .menu-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ─────────────────────────────
+       HERO
+       ───────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      padding: 96px 0 64px;
       background:
         radial-gradient(circle at 20% 20%, rgba(192, 192, 192, 0.16), transparent 30%),
         radial-gradient(circle at 80% 40%, rgba(120, 120, 120, 0.18), transparent 30%),
@@ -144,63 +296,65 @@
     }
 
     .eyebrow {
-      color: #c0c0c0;
-      font-size: 0.85rem;
+      color: var(--accent);
+      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 3px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .eyebrow-xl {
       font-family: "Manrope", sans-serif;
-      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-size: clamp(1.75rem, 4.5vw, 3.2rem);
       font-weight: 800;
       color: #ffffff;
       letter-spacing: -0.5px;
       text-transform: none;
       line-height: 1.1;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
 
     h1 {
-      font-size: clamp(2rem, 4.6vw, 3.6rem);
-      line-height: 1.05;
+      font-size: clamp(1.85rem, 6.5vw, 3.6rem);
+      line-height: 1.08;
       font-weight: 900;
-      letter-spacing: -1.5px;
-      margin-bottom: 24px;
+      letter-spacing: -1px;
+      margin-bottom: 18px;
     }
 
-    .hero h1 {
-      white-space: normal;
-    }
+    .hero h1 { white-space: normal; }
 
     @media (min-width: 720px) {
       .hero h1 {
         white-space: nowrap;
+        line-height: 1.05;
+        letter-spacing: -1.5px;
       }
     }
 
     .hero h1 span {
-      color: #c0c0c0;
+      color: var(--accent);
       display: block;
-      font-size: clamp(1rem, 2vw, 1.6rem);
+      font-size: clamp(0.85rem, 1.8vw, 1.4rem);
       letter-spacing: 4px;
       font-weight: 500;
       text-transform: uppercase;
-      margin-top: 20px;
+      margin-top: 14px;
     }
 
     .hero p {
-      font-size: clamp(1.05rem, 1.5vw, 1.25rem);
-      max-width: 720px;
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
+      max-width: 640px;
       color: #d0d0d0;
-      margin-bottom: 34px;
+      margin-bottom: 28px;
+      line-height: 1.6;
     }
 
+    /* Buttons */
     .buttons {
       display: flex;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
@@ -208,148 +362,164 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 14px 28px;
+      padding: 14px 26px;
       border-radius: 999px;
       font-family: "Inter", sans-serif;
       font-weight: 600;
       font-size: 0.95rem;
       transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
-      border: 1px solid #c0c0c0;
+      border: 1px solid var(--accent);
       cursor: pointer;
-      min-height: 44px;
+      min-height: 48px;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
 
     .btn-primary {
       background: #f5f5f5;
       color: #050505;
     }
-
-    .btn-primary:hover {
-      background: #ffffff;
-      border-color: #ffffff;
-    }
+    .btn-primary:hover { background: #ffffff; border-color: #ffffff; }
 
     .btn-secondary {
       color: #ffffff;
       background: transparent;
     }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: #ffffff;
+    /* Scroll cue at hero bottom */
+    .scroll-cue {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      color: var(--accent);
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.7;
+      animation: bob 2s ease-in-out infinite;
     }
 
-    /* ─── SECTIONS ─── */
-    section {
-      padding: 96px 0;
+    .scroll-cue::after {
+      content: "";
+      width: 1px;
+      height: 26px;
+      background: linear-gradient(180deg, var(--accent), transparent);
     }
+
+    @keyframes bob {
+      0%, 100% { transform: translate(-50%, 0); opacity: 0.7; }
+      50% { transform: translate(-50%, 6px); opacity: 1; }
+    }
+
+    /* ─────────────────────────────
+       SECTIONS
+       ───────────────────────────── */
+    section { padding: 64px 0; }
 
     .section-header {
-      margin-bottom: 48px;
+      margin-bottom: 36px;
       max-width: 780px;
     }
 
     .section-header h2 {
-      font-size: clamp(1.875rem, 4vw, 3rem);
-      line-height: 1.1;
-      margin-bottom: 18px;
-      letter-spacing: -1px;
+      font-size: clamp(1.65rem, 4vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
       font-weight: 700;
     }
 
     #expert .section-header h2 {
-      font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+      font-size: clamp(1.05rem, 1.8vw, 1.4rem);
       font-weight: 500;
       letter-spacing: -0.2px;
-      color: #d7d7d7;
-      margin-bottom: 14px;
+      color: var(--text-soft);
+      margin-bottom: 12px;
     }
 
     .section-header p {
-      color: #cfcfcf;
-      font-size: 1.05rem;
+      color: var(--text-soft);
+      font-size: 1rem;
       line-height: 1.65;
     }
 
-    .light-section {
-      background: #0b0b0b;
-    }
+    .light-section { background: var(--bg-soft); }
 
-    /* ─── CARD GRIDS ─── */
+    /* ─── CARDS ─── */
     .cards {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
+      grid-template-columns: 1fr;
+      gap: 14px;
     }
 
     .card {
       background: linear-gradient(145deg, #111111, #080808);
-      border: 1px solid rgba(192, 192, 192, 0.16);
-      border-left: 3px solid #c0c0c0;
-      border-radius: 14px;
-      padding: 32px 28px;
-      min-height: 250px;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 24px 22px;
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s ease, border-color 0.3s ease, border-left-color 0.3s ease, box-shadow 0.3s ease;
+      gap: 10px;
+      transition: transform var(--ease), border-color var(--ease), border-left-color var(--ease), box-shadow var(--ease);
     }
 
     .card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(192, 192, 192, 0.45);
-      border-left-color: #ffffff;
-      box-shadow: 0 18px 50px rgba(255, 255, 255, 0.06);
+      transform: translateY(-4px);
+      border-color: var(--line-strong);
+      border-left-color: var(--accent-bright);
+      box-shadow: 0 14px 40px rgba(255, 255, 255, 0.05);
     }
 
     .card h3 {
-      font-size: 1.3rem;
-      margin-bottom: 14px;
+      font-size: 1.15rem;
       font-weight: 600;
       letter-spacing: -0.01em;
     }
 
-    .card p,
-    .card li {
+    .card p, .card li {
       color: #c9c9c9;
-      font-size: 0.96rem;
+      font-size: 0.94rem;
       line-height: 1.6;
     }
 
-    .card ul {
-      padding-left: 18px;
-      margin-top: 10px;
-    }
+    .card ul { padding-left: 18px; margin-top: 6px; }
 
     /* ─── SPLIT LAYOUT ─── */
     .split {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
+      grid-template-columns: 1fr;
+      gap: 28px;
       align-items: center;
     }
 
     .feature-box {
-      border-radius: 14px;
-      padding: 44px;
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
       background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
       border: 1px solid rgba(192, 192, 192, 0.2);
-      border-left: 3px solid #c0c0c0;
+      border-left: 3px solid var(--accent);
       transition: background 0.25s ease, border-left-color 0.25s ease, transform 0.25s ease;
     }
 
     .feature-box:hover {
       background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
-      border-left-color: #ffffff;
+      border-left-color: var(--accent-bright);
       transform: translateX(2px);
     }
 
     .feature-box h3 {
-      font-size: clamp(1.5rem, 2.5vw, 2rem);
-      margin-bottom: 18px;
+      font-size: clamp(1.3rem, 2.5vw, 2rem);
+      margin-bottom: 14px;
       font-weight: 700;
       letter-spacing: -0.5px;
     }
@@ -362,80 +532,89 @@
     /* ─── COMPETENCIES ─── */
     .competencies {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      grid-template-columns: 1fr;
+      gap: 14px;
     }
 
     .competency {
-      padding: 26px 28px;
-      border-left: 3px solid #c0c0c0;
+      padding: 22px 24px;
+      border-left: 3px solid var(--accent);
       background: rgba(255, 255, 255, 0.035);
-      border-radius: 14px;
+      border-radius: var(--radius);
       transition: background 0.25s ease, border-left-color 0.25s ease, transform 0.25s ease;
     }
 
     .competency:hover {
       background: rgba(255, 255, 255, 0.06);
-      border-left-color: #ffffff;
+      border-left-color: var(--accent-bright);
       transform: translateX(2px);
     }
 
     .competency h3 {
-      margin-bottom: 8px;
-      font-size: 1.15rem;
+      margin-bottom: 6px;
+      font-size: 1.1rem;
       font-weight: 600;
     }
 
     .competency p {
-      color: #cfcfcf;
+      color: var(--text-soft);
       line-height: 1.6;
+      font-size: 0.95rem;
     }
 
     /* ─── TEAM ─── */
-    .team {
-      background: linear-gradient(180deg, #0b0b0b, #050505);
-    }
+    .team { background: linear-gradient(180deg, var(--bg-soft), var(--bg)); }
 
     .team-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      grid-template-columns: 1fr;
+      gap: 14px;
     }
 
     .team-card {
-      background: #101010;
-      border: 1px solid rgba(192, 192, 192, 0.16);
-      border-left: 3px solid #c0c0c0;
-      border-radius: 14px;
-      padding: 32px 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 26px 22px;
       text-align: center;
-      transition: transform 0.3s ease, border-color 0.3s ease, border-left-color 0.3s ease;
+      transition: transform var(--ease), border-color var(--ease), border-left-color var(--ease);
     }
 
     .team-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(192, 192, 192, 0.32);
-      border-left-color: #ffffff;
+      transform: translateY(-3px);
+      border-color: var(--line-strong);
+      border-left-color: var(--accent-bright);
     }
 
     .avatar {
-      width: 96px;
-      height: 96px;
+      width: 78px;
+      height: 78px;
       border-radius: 50%;
       background: linear-gradient(135deg, #c0c0c0, #4f4f4f);
-      margin: 0 auto 20px;
+      margin: 0 auto 16px;
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #050505;
+      letter-spacing: 1px;
+      user-select: none;
     }
 
     .team-card h3 {
-      margin-bottom: 8px;
-      font-size: 1.15rem;
+      margin-bottom: 4px;
+      font-size: 1.1rem;
       font-weight: 600;
     }
 
     .team-card p {
-      color: #cfcfcf;
-      font-size: 0.95rem;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     /* ─── CTA ─── */
@@ -443,26 +622,26 @@
       text-align: center;
       background: #f4f4f4;
       color: #050505;
-      padding: 96px 24px;
+      padding: 64px var(--pad-x);
     }
 
     .cta h2 {
-      font-size: clamp(1.875rem, 5vw, 3.5rem);
-      margin-bottom: 18px;
-      letter-spacing: -1px;
+      font-size: clamp(1.65rem, 5vw, 3.5rem);
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
       font-weight: 800;
+      line-height: 1.15;
     }
 
     .cta p {
-      max-width: 680px;
-      margin: 0 auto 30px;
+      max-width: 620px;
+      margin: 0 auto 26px;
       color: #333333;
-      font-size: 1.05rem;
-      line-height: 1.65;
+      font-size: 1rem;
+      line-height: 1.6;
     }
 
     .cta .btn {
-      display: inline-flex;
       background: #050505;
       color: #ffffff;
       border-color: #050505;
@@ -475,123 +654,180 @@
 
     /* ─── FOOTER ─── */
     footer {
-      padding: 40px 0;
-      border-top: 1px solid rgba(192, 192, 192, 0.16);
-      color: #bfbfbf;
-      font-size: 0.9rem;
+      padding: 32px 0 calc(32px + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      color: var(--text-muted);
+      font-size: 0.88rem;
     }
 
     .footer-content {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
+      gap: 12px;
+      text-align: center;
     }
 
     .footer-content a {
-      color: #d7d7d7;
+      color: var(--text-soft);
       transition: color 0.2s ease;
     }
 
-    .footer-content a:hover {
-      color: #ffffff;
+    .footer-content a:hover { color: var(--accent-bright); }
+
+    /* ─────────────────────────────
+       FLOATING STICKY CONTACT (mobile)
+       ───────────────────────────── */
+    .sticky-contact {
+      position: fixed;
+      right: 18px;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      z-index: 950;
+      width: 56px;
+      height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      color: #050505;
+      border-radius: 50%;
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+      transition: transform 0.2s ease, background 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 1024px) {
+    .sticky-contact:hover {
+      background: #ffffff;
+      transform: scale(1.06);
+    }
+
+    .sticky-contact:active { transform: scale(0.96); }
+
+    .sticky-contact svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* ─────────────────────────────
+       RESPONSIVE: TABLET ≥720
+       ───────────────────────────── */
+    @media (min-width: 720px) {
+      :root { --pad-x: 28px; }
+
+      .competencies,
       .cards,
       .team-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
       }
 
-      .split {
-        gap: 40px;
-      }
+      .split { gap: 40px; }
+
+      section { padding: 80px 0; }
+
+      .section-header { margin-bottom: 44px; }
     }
 
-    @media (max-width: 768px) {
-      nav {
-        height: 64px;
-      }
+    /* ─────────────────────────────
+       RESPONSIVE: DESKTOP ≥1024
+       ───────────────────────────── */
+    @media (min-width: 1024px) {
+      :root { --pad-x: 32px; }
 
-      .nav-links {
-        display: none;
-      }
+      nav { height: 76px; }
+
+      .logo { font-size: 1.2rem; letter-spacing: 1px; }
+      .logo-full { display: inline; }
+
+      .nav-links { display: flex; }
+      .nav-toggle { display: none; }
+      .menu-drawer, .menu-backdrop { display: none; }
+      .sticky-contact { display: none; }
+
+      .scroll-cue { display: none; }
 
       .hero {
-        padding-top: 100px;
-        min-height: auto;
-        padding-bottom: 80px;
+        padding: 120px 0 60px;
+        min-height: 100vh;
       }
+
+      .eyebrow {
+        font-size: 0.85rem;
+        letter-spacing: 3px;
+        margin-bottom: 16px;
+      }
+
+      h1 { margin-bottom: 24px; }
+
+      .hero p {
+        font-size: 1.15rem;
+        margin-bottom: 34px;
+        max-width: 720px;
+      }
+
+      .buttons { gap: 16px; }
+
+      .btn {
+        padding: 14px 28px;
+        min-height: 44px;
+      }
+
+      section { padding: 96px 0; }
+
+      .section-header { margin-bottom: 48px; }
 
       .cards,
       .team-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
       }
 
-      .split,
-      .competencies {
-        grid-template-columns: 1fr;
-        gap: 28px;
+      .card { padding: 32px 28px; gap: 12px; }
+
+      .card h3 { font-size: 1.3rem; }
+
+      .feature-box { padding: 44px; }
+
+      .competency { padding: 26px 28px; }
+
+      .competency h3 { font-size: 1.15rem; }
+
+      .split {
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
       }
 
-      section {
-        padding: 72px 0;
-      }
+      .avatar { width: 96px; height: 96px; font-size: 1.85rem; }
 
-      .feature-box {
-        padding: 32px 28px;
-      }
+      .team-card { padding: 32px 28px; }
 
-      .cta {
-        padding: 80px 20px;
+      .cta { padding: 96px 24px; }
+
+      .cta h2 { margin-bottom: 18px; }
+
+      footer {
+        padding: 40px 0;
       }
 
       .footer-content {
-        justify-content: center;
-        text-align: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 16px;
+        text-align: left;
       }
     }
 
-    @media (max-width: 480px) {
-      .container {
-        padding: 0 18px;
-      }
-
-      .logo {
-        font-size: 1.05rem;
-      }
-
-      .logo span {
-        display: none;
-      }
-
-      h1 {
-        letter-spacing: -1px;
-      }
-
-      .buttons {
-        flex-direction: column;
-        width: 100%;
-      }
-
-      .buttons .btn {
-        width: 100%;
-      }
-
-      .card,
-      .team-card {
-        padding: 26px 22px;
-      }
-
-      .feature-box {
-        padding: 28px 24px;
-        border-radius: 20px;
-      }
-
-      section {
-        padding: 60px 0;
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      .scroll-cue { animation: none; }
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
       }
     }
   </style>
@@ -600,16 +836,31 @@
   <header>
     <div class="container">
       <nav>
-        <a href="#" class="logo">TPLS <span>| Transparence Lending Solutions LLC</span></a>
+        <a href="#" class="logo">TPLS <span class="logo-full">| Transparence Lending Solutions LLC</span></a>
+
         <div class="nav-links">
           <a href="#services">Services</a>
           <a href="#competencies">Competencies</a>
           <a href="#expert">Expert Witness</a>
           <a href="#team">Meet Our Team</a>
         </div>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+          <span class="bars" aria-hidden="true"><span></span></span>
+        </button>
       </nav>
     </div>
   </header>
+
+  <div class="menu-backdrop" aria-hidden="true"></div>
+
+  <nav class="menu-drawer" id="mobile-menu" aria-label="Mobile">
+    <a href="#services" class="menu-link">Services</a>
+    <a href="#competencies" class="menu-link">Competencies</a>
+    <a href="#expert" class="menu-link">Expert Witness</a>
+    <a href="#team" class="menu-link">Meet Our Team</a>
+    <a href="mailto:TV@TPTLS.com" class="menu-cta">Contact TPLS</a>
+  </nav>
 
   <main>
     <section class="hero">
@@ -630,6 +881,7 @@
           </div>
         </div>
       </div>
+      <div class="scroll-cue" aria-hidden="true">Scroll</div>
     </section>
 
     <section class="light-section">
@@ -665,8 +917,6 @@
         </div>
 
         <div class="cards">
-          
-          
           <div class="card">
             <h3>Portfolio &amp; Business Analysis</h3>
             <p>Analyze lending portfolios to optimize revenue, liquidity, credit exposure, and collateral efficiency.</p>
@@ -696,8 +946,6 @@
             <h3>Credit &amp; Risk Advisory</h3>
             <p>Providing tools around third-party credit, counterparty risk, margin, collateral, and volatility analysis.</p>
           </div>
-
-          
         </div>
       </div>
     </section>
@@ -765,19 +1013,19 @@
 
         <div class="team-grid">
           <div class="team-card">
-            <div class="avatar"></div>
+            <div class="avatar" aria-hidden="true">AN</div>
             <h3>Advisor Name</h3>
             <p>Founder / Strategic Financing Advisor</p>
           </div>
 
           <div class="team-card">
-            <div class="avatar"></div>
+            <div class="avatar" aria-hidden="true">AN</div>
             <h3>Advisor Name</h3>
             <p>Regulatory &amp; Business Structuring</p>
           </div>
 
           <div class="team-card">
-            <div class="avatar"></div>
+            <div class="avatar" aria-hidden="true">AN</div>
             <h3>Advisor Name</h3>
             <p>Credit, Risk &amp; Market Strategy</p>
           </div>
@@ -801,5 +1049,50 @@
       <p><a href="mailto:TV@TPTLS.com">TV@TPTLS.com</a></p>
     </div>
   </footer>
+
+  <!-- Floating sticky contact button (mobile only) -->
+  <a href="mailto:TV@TPTLS.com" class="sticky-contact" aria-label="Contact TPLS">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+      <polyline points="22,6 12,13 2,6"/>
+    </svg>
+  </a>
+
+  <script>
+    // ─── MOBILE NAV TOGGLE ───
+    const toggle = document.querySelector('.nav-toggle');
+    const backdrop = document.querySelector('.menu-backdrop');
+    const drawerLinks = document.querySelectorAll('.menu-drawer a');
+
+    function setMenu(open) {
+      document.body.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+
+    toggle.addEventListener('click', () => {
+      const isOpen = document.body.classList.contains('menu-open');
+      setMenu(!isOpen);
+    });
+
+    backdrop.addEventListener('click', () => setMenu(false));
+
+    drawerLinks.forEach((link) => {
+      link.addEventListener('click', () => setMenu(false));
+    });
+
+    // Close menu on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.body.classList.contains('menu-open')) {
+        setMenu(false);
+      }
+    });
+
+    // Auto-close menu if viewport widens past mobile breakpoint
+    const mq = window.matchMedia('(min-width: 1024px)');
+    mq.addEventListener('change', (e) => {
+      if (e.matches) setMenu(false);
+    });
+  </script>
 </body>
 </html>
