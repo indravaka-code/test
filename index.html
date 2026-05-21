@@ -107,55 +107,77 @@
     }
 
     .logo {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
       font-family: "Manrope", sans-serif;
       font-size: 1.05rem;
       font-weight: 800;
       letter-spacing: 0.5px;
       color: #ffffff;
       white-space: nowrap;
+      min-width: 0;
     }
 
     .logo-full {
       color: var(--accent);
       font-weight: 400;
+      font-size: 0.92rem;
+      letter-spacing: 0.2px;
       display: none;
     }
 
     .nav-links {
       display: none;
       gap: 28px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-soft);
+      align-items: center;
     }
 
     .nav-links a {
+      position: relative;
+      padding: 6px 2px;
       transition: color 0.2s ease;
     }
 
-    .nav-links a:hover {
-      color: var(--accent-bright);
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      bottom: 0;
+      height: 1px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
     }
 
-    /* Hamburger button */
+    .nav-links a:hover { color: var(--accent-bright); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    /* Hamburger button — clean icon, no chrome */
     .nav-toggle {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       background: transparent;
-      border: 1px solid var(--line);
-      border-radius: 10px;
+      border: 0;
       color: var(--text);
       cursor: pointer;
-      transition: border-color 0.2s ease, background 0.2s ease;
+      transition: color 0.2s ease, opacity 0.2s ease;
       -webkit-tap-highlight-color: transparent;
+      margin-right: -8px; /* visually align edge to container */
     }
 
-    .nav-toggle:hover { border-color: var(--line-strong); background: rgba(255,255,255,0.04); }
+    .nav-toggle:hover { color: var(--accent-bright); }
+    .nav-toggle:active { opacity: 0.75; }
 
     .nav-toggle .bars {
-      width: 18px;
+      width: 22px;
       height: 14px;
       position: relative;
     }
@@ -717,6 +739,17 @@
     @media (min-width: 720px) {
       :root { --pad-x: 28px; }
 
+      nav { height: 70px; }
+
+      .logo { font-size: 1.15rem; letter-spacing: 0.8px; }
+      .logo-full { display: inline; }
+
+      .nav-links { display: inline-flex; }
+      .nav-toggle { display: none; }
+      .menu-drawer, .menu-backdrop { display: none; }
+      .sticky-contact { display: none; }
+      .scroll-cue { display: none; }
+
       .competencies,
       .cards,
       .team-grid {
@@ -740,14 +773,9 @@
       nav { height: 76px; }
 
       .logo { font-size: 1.2rem; letter-spacing: 1px; }
-      .logo-full { display: inline; }
+      .logo-full { font-size: 1rem; }
 
-      .nav-links { display: flex; }
-      .nav-toggle { display: none; }
-      .menu-drawer, .menu-backdrop { display: none; }
-      .sticky-contact { display: none; }
-
-      .scroll-cue { display: none; }
+      .nav-links { gap: 32px; font-size: 0.9rem; }
 
       .hero {
         padding: 120px 0 60px;
@@ -876,7 +904,6 @@
           </p>
           <div class="buttons">
             <a href="#services" class="btn btn-primary">Explore Capabilities</a>
-            <a href="#team" class="btn btn-secondary">Meet Our Team</a>
             <a href="mailto:TV@TPTLS.com" class="btn btn-secondary">Contact Us</a>
           </div>
         </div>
@@ -1089,7 +1116,7 @@
     });
 
     // Auto-close menu if viewport widens past mobile breakpoint
-    const mq = window.matchMedia('(min-width: 1024px)');
+    const mq = window.matchMedia('(min-width: 720px)');
     mq.addEventListener('change', (e) => {
       if (e.matches) setMenu(false);
     });
