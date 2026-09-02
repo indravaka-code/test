@@ -58,7 +58,11 @@
 
     * { box-sizing: border-box; }
 
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; -webkit-text-size-adjust: 100%; }
+
+    @media (max-width: 960px) { html { scroll-padding-top: 76px; } }
+
+    a, button { -webkit-tap-highlight-color: transparent; }
 
     body {
       margin: 0;
@@ -286,6 +290,7 @@
       right: 0;
       max-height: calc(100svh - 66px);
       overflow-y: auto;
+      overscroll-behavior: contain;
       background: rgba(8, 14, 26, 0.98);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
@@ -355,6 +360,7 @@
       align-items: center;
       min-height: clamp(540px, 76vh, 780px);
       padding: 88px 0 96px;
+      /* dvh tracks the collapsing address bar on mobile; vh above is the fallback */
       border-bottom: 1px solid var(--border);
       /* depth comes from placed light, not a corner-to-corner wash: a navy
          key light behind the lens, a cooler fill top-left, and a floor
@@ -481,6 +487,14 @@
           rgba(8, 14, 26, 0.34) 72%,
           rgba(8, 14, 26, 0.78) 100%);
       }
+    }
+
+    @supports (height: 100dvh) {
+      .hero { min-height: clamp(540px, 76dvh, 780px); }
+    }
+
+    @media (max-width: 640px) {
+      .hero { min-height: clamp(470px, 72dvh, 620px); padding: 64px 0 72px; }
     }
 
     /* ─── TICKER ─── */
@@ -671,6 +685,8 @@
     .cap-card h3 { font-size: 1.1rem; margin-bottom: 10px; line-height: 1.3; }
     .cap-card p { font-size: 14.5px; color: var(--text-dim); line-height: 1.6; }
 
+    @media (max-width: 640px) { .cap-card p { font-size: 15.5px; } }
+
     /* ─── COMPETENCIES (ghost-numeral panels) ─── */
     .grid-4 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 
@@ -704,6 +720,10 @@
       pointer-events: none;
     }
 
+    @media (max-width: 640px) {
+      .comp-card .big-num { font-size: 84px; top: -8px; right: 6px; color: rgba(255, 255, 255, 0.04); }
+    }
+
     .comp-index {
       position: relative;
       font-size: 12.5px;
@@ -722,6 +742,8 @@
     }
 
     .comp-card p { position: relative; color: var(--text-dim); font-size: 15px; line-height: 1.65; }
+
+    @media (max-width: 640px) { .comp-card p { font-size: 15.5px; } }
 
     /* ─── TEAM ─── */
     .team-grid {
@@ -872,7 +894,11 @@
     .footer-bottom a { color: var(--accent); font-weight: 600; }
     .footer-bottom a:hover { color: var(--accent-soft); }
 
-    @media (max-width: 640px) { .footer-bottom { flex-direction: column; text-align: center; } }
+    @media (max-width: 640px) {
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .footer-links { gap: 0 1.6rem; }
+      .footer-links a, .footer-bottom a { display: inline-block; padding: 11px 0; }
+    }
 
     /* ─── FLOATING STICKY CONTACT (mobile) ─── */
     .sticky-contact {
@@ -1275,13 +1301,13 @@
 
         <div class="team-grid">
           <div class="member reveal">
-            <div class="member-photo"><img src="1665069782900.jpg" alt="Anthony Venditti"></div>
+            <div class="member-photo"><img src="1665069782900.jpg" alt="Anthony Venditti" width="400" height="400" loading="lazy" decoding="async"></div>
             <h3 class="member-name">Anthony Venditti</h3>
             <p class="member-role">Chief Executive Officer</p>
           </div>
 
           <div class="member reveal">
-            <div class="member-photo"><img src="IMG_5465.jpg" alt="Indraneel Vaka"></div>
+            <div class="member-photo"><img src="IMG_5465-800.jpg" alt="Indraneel Vaka" width="800" height="533" loading="lazy" decoding="async"></div>
             <h3 class="member-name">Indraneel Vaka</h3>
             <p class="member-role">Associate</p>
           </div>
