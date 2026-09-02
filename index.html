@@ -48,6 +48,10 @@
       --accent:      #7ea6dd;
       --accent-soft: #b9d1ef;
 
+      /* top-edge highlight that reads as light catching a raised surface */
+      --hairline:  rgba(255, 255, 255, 0.07);
+      --glow-accent: 0 0 0 1px rgba(126, 166, 221, 0.22), 0 18px 44px rgba(20, 42, 78, 0.55);
+
       --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.45);
       --shadow-lift: 0 16px 48px rgba(0, 0, 0, 0.6);
       --shadow-sm:   0 1px 2px rgba(0, 0, 0, 0.4);
@@ -58,7 +62,11 @@
 
     * { box-sizing: border-box; }
 
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; -webkit-text-size-adjust: 100%; }
+
+    @media (max-width: 960px) { html { scroll-padding-top: 76px; } }
+
+    a, button { -webkit-tap-highlight-color: transparent; }
 
     body {
       margin: 0;
@@ -131,16 +139,17 @@
 
     /* inverse of the brand primary: light pill on dark ground */
     .btn-primary {
-      background: var(--slate-100);
+      background: linear-gradient(180deg, #fff, var(--slate-100));
       color: var(--navy-900);
       border-color: var(--slate-100);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
     }
 
     .btn-primary:hover {
       background: #fff;
       border-color: #fff;
       color: var(--navy-900);
-      box-shadow: 0 8px 24px rgba(126, 166, 221, 0.3);
+      box-shadow: 0 10px 30px rgba(126, 166, 221, 0.38);
     }
 
     .btn-outline {
@@ -286,6 +295,7 @@
       right: 0;
       max-height: calc(100svh - 66px);
       overflow-y: auto;
+      overscroll-behavior: contain;
       background: rgba(8, 14, 26, 0.98);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
@@ -350,49 +360,89 @@
     .hero {
       position: relative;
       overflow: hidden;
-      background:
-        radial-gradient(ellipse 88% 118% at 78% 48%, rgba(45, 74, 124, 0.72) 0%, transparent 62%),
-        linear-gradient(135deg, #16233e 0%, #0d1626 55%, #080e1a 100%);
       color: #fff;
       display: flex;
       align-items: center;
       min-height: clamp(540px, 76vh, 780px);
       padding: 88px 0 96px;
+      /* dvh tracks the collapsing address bar on mobile; vh above is the fallback */
       border-bottom: 1px solid var(--border);
+      /* depth comes from placed light, not a corner-to-corner wash: a navy
+         key light behind the lens, a cooler fill top-left, and a floor
+         shadow that hands off to the ticker. */
+      background:
+        radial-gradient(ellipse 46% 62% at 71% 48%, rgba(77, 107, 137, 0.5) 0%, rgba(33, 52, 95, 0.3) 46%, transparent 74%),
+        radial-gradient(ellipse 76% 56% at 6% 2%, rgba(33, 52, 95, 0.34) 0%, transparent 62%),
+        radial-gradient(ellipse 120% 58% at 50% 110%, rgba(3, 6, 12, 0.9) 0%, transparent 62%),
+        var(--bg);
     }
 
-    /* faint eye motif — the reference's hero graphic, redrawn as line art */
-    .hero-eye {
+    /* measured grid — the instrument bed the lens sits on */
+    .hero-grid {
       position: absolute;
-      right: -6%;
+      inset: -1px;
+      z-index: 1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(169, 184, 200, 0.09) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(169, 184, 200, 0.09) 1px, transparent 1px);
+      background-size: 72px 72px;
+      -webkit-mask-image: radial-gradient(ellipse 58% 70% at 70% 50%, #000 10%, transparent 78%);
+              mask-image: radial-gradient(ellipse 58% 70% at 70% 50%, #000 10%, transparent 78%);
+    }
+
+    /* lens motif — vesica arcs and a dial, all struck from one centre */
+    .hero-lens {
+      position: absolute;
+      right: 1%;
       top: 50%;
       transform: translateY(-50%);
-      width: min(66vw, 900px);
+      width: min(56vw, 790px);
       height: auto;
       pointer-events: none;
       z-index: 1;
       color: var(--accent);
-      opacity: 0.55;
+      opacity: 0.82;
     }
 
-    /* scrim: holds the left column dark so the copy stays legible */
+    .hero-lens .dial { transform-origin: 450px 310px; animation: dial-turn 150s linear infinite; }
+    .hero-lens .pupil-glow { transform-origin: 450px 310px; animation: pupil-breathe 9s ease-in-out infinite; }
+
+    @keyframes dial-turn { to { transform: rotate(360deg); } }
+    @keyframes pupil-breathe {
+      0%, 100% { opacity: 0.85; transform: scale(1); }
+      50%      { opacity: 1;    transform: scale(1.05); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-lens .dial, .hero-lens .pupil-glow { animation: none; }
+    }
+
+    /* scrim: holds the left column dark so the copy stays legible, and
+       feathers the top and bottom edges into the nav and the ticker */
     .hero::before {
       content: "";
       position: absolute;
       inset: 0;
       pointer-events: none;
       z-index: 2;
-      background: linear-gradient(90deg,
-        rgba(8, 14, 26, 0.93) 0%,
-        rgba(8, 14, 26, 0.74) 38%,
-        rgba(8, 14, 26, 0.2) 68%,
-        rgba(8, 14, 26, 0) 88%);
+      background:
+        linear-gradient(90deg,
+          rgba(8, 14, 26, 0.88) 0%,
+          rgba(8, 14, 26, 0.6) 32%,
+          rgba(8, 14, 26, 0.1) 58%,
+          rgba(8, 14, 26, 0) 76%),
+        linear-gradient(180deg,
+          rgba(8, 14, 26, 0.5) 0%,
+          transparent 18%,
+          transparent 76%,
+          rgba(8, 14, 26, 0.6) 100%);
     }
 
     .hero-inner { position: relative; z-index: 3; max-width: 980px; width: 100%; }
 
     .hero h1 {
-      font-size: clamp(34px, 4.5vw, 54px);
+      font-size: clamp(34px, 5vw, 64px);
       line-height: 1.1;
       font-weight: 800;
       letter-spacing: -0.02em;
@@ -403,7 +453,7 @@
 
     .hero p.deck {
       margin-top: 20px;
-      font-size: clamp(17px, 1.85vw, 22px);
+      font-size: clamp(17px, 1.95vw, 23px);
       line-height: 1.5;
       font-weight: 400;
       color: rgba(255, 255, 255, 0.8);
@@ -413,14 +463,43 @@
     .hero-ctas { display: flex; gap: 14px; margin-top: 40px; flex-wrap: wrap; }
     .hero .hero-ctas .btn { padding: 0.85rem 1.6rem; font-size: 15px; }
 
+    /* one column: the lens centres up behind the copy as texture rather than
+       hanging off the right edge where only a stray arc would survive */
     @media (max-width: 820px) {
-      .hero-eye { right: -26%; width: 124vw; opacity: 0.34; }
-      .hero::before {
-        background: linear-gradient(90deg,
-          rgba(8, 14, 26, 0.95) 0%,
-          rgba(8, 14, 26, 0.8) 60%,
-          rgba(8, 14, 26, 0.58) 100%);
+      .hero {
+        background:
+          radial-gradient(ellipse 74% 46% at 50% 44%, rgba(77, 107, 137, 0.36) 0%, rgba(33, 52, 95, 0.2) 48%, transparent 76%),
+          radial-gradient(ellipse 90% 40% at 50% 106%, rgba(3, 6, 12, 0.9) 0%, transparent 62%),
+          var(--bg);
       }
+      .hero-lens {
+        right: auto;
+        left: 50%;
+        top: 46%;
+        transform: translate(-50%, -50%);
+        width: 152vw;
+        opacity: 0.3;
+      }
+      .hero-grid {
+        background-size: 52px 52px;
+        -webkit-mask-image: radial-gradient(ellipse 76% 48% at 50% 46%, #000 6%, transparent 82%);
+                mask-image: radial-gradient(ellipse 76% 48% at 50% 46%, #000 6%, transparent 82%);
+      }
+      .hero::before {
+        background: linear-gradient(180deg,
+          rgba(8, 14, 26, 0.62) 0%,
+          rgba(8, 14, 26, 0.22) 26%,
+          rgba(8, 14, 26, 0.34) 72%,
+          rgba(8, 14, 26, 0.78) 100%);
+      }
+    }
+
+    @supports (height: 100dvh) {
+      .hero { min-height: clamp(540px, 76dvh, 780px); }
+    }
+
+    @media (max-width: 640px) {
+      .hero { min-height: clamp(470px, 72dvh, 620px); padding: 64px 0 72px; }
     }
 
     /* ─── TICKER ─── */
@@ -467,6 +546,22 @@
       border-bottom: 1px solid var(--border);
     }
 
+    /* the boundary catches accent light at centre and fades to nothing at the
+       edges, so sections separate without a hard seam */
+    .section.alt::before,
+    .section.alt::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(126, 166, 221, 0.34), transparent);
+    }
+
+    .section.alt::before { top: -1px; }
+    .section.alt::after  { bottom: -1px; }
+
     @media (max-width: 640px) { .section { padding: 64px 0; } }
 
     .section-head { max-width: 680px; margin: 0 auto 56px; text-align: center; }
@@ -481,7 +576,7 @@
       display: block;
     }
 
-    .section-head h2 { font-size: clamp(26px, 3.6vw, 40px); line-height: 1.15; }
+    .section-head h2 { font-size: clamp(26px, 3.9vw, 46px); line-height: 1.12; letter-spacing: -0.015em; }
     .section-head h2 em { font-style: normal; color: var(--accent); }
     .section-head p { margin-top: 16px; font-size: 16.5px; color: var(--text-dim); line-height: 1.6; }
 
@@ -507,7 +602,7 @@
       margin-bottom: 14px;
     }
 
-    .feat-text h2 { font-size: clamp(24px, 3.2vw, 36px); line-height: 1.18; }
+    .feat-text h2 { font-size: clamp(24px, 3.4vw, 40px); line-height: 1.15; letter-spacing: -0.015em; }
     .feat-text h2 em { font-style: normal; color: var(--accent); }
 
     .feat-text p.desc {
@@ -524,7 +619,7 @@
       padding: 44px 40px;
       background: linear-gradient(150deg, var(--navy-700), var(--navy-900));
       border: 1px solid var(--border-str);
-      box-shadow: var(--shadow-lift);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), var(--shadow-lift);
     }
 
     .feat-visual::after {
@@ -563,18 +658,20 @@
     @media (max-width: 600px) { .grid-6 { grid-template-columns: 1fr; } }
 
     .cap-card {
-      background: var(--surface);
+      position: relative;
+      background: linear-gradient(168deg, var(--surface-2) 0%, var(--surface) 58%);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 28px;
+      box-shadow: inset 0 1px 0 var(--hairline), 0 2px 10px rgba(0, 0, 0, 0.25);
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
     }
 
     .cap-card:hover {
       transform: translateY(-4px);
-      background: var(--surface-2);
-      box-shadow: var(--shadow-lift);
-      border-color: var(--border-str);
+      background: linear-gradient(168deg, #1f3053 0%, var(--surface-2) 58%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), var(--glow-accent);
+      border-color: rgba(126, 166, 221, 0.4);
     }
 
     .cap-top {
@@ -588,8 +685,10 @@
       width: 46px;
       height: 46px;
       border-radius: 12px;
-      background: var(--navy-700);
+      background: linear-gradient(160deg, var(--navy-600), var(--navy-800));
       border: 1px solid var(--border-str);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 6px 16px rgba(0, 0, 0, 0.32);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -606,15 +705,22 @@
       stroke-linejoin: round;
     }
 
+    .cap-card:hover .icon-box {
+      transform: translateY(-1px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 8px 22px rgba(126, 166, 221, 0.28);
+    }
+
     .cap-num { font-size: 12.5px; font-weight: 700; letter-spacing: 0.12em; color: var(--text-mute); }
 
     .cap-card h3 { font-size: 1.1rem; margin-bottom: 10px; line-height: 1.3; }
     .cap-card p { font-size: 14.5px; color: var(--text-dim); line-height: 1.6; }
 
-    /* ─── COMPETENCIES (ghost-numeral panels) ─── */
-    .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    @media (max-width: 640px) { .cap-card p { font-size: 15.5px; } }
 
-    @media (max-width: 760px) { .grid-4 { grid-template-columns: 1fr; } }
+    /* ─── COMPETENCIES (ghost-numeral panels) ─── */
+    .grid-4 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+    @media (max-width: 900px) { .grid-4 { grid-template-columns: 1fr; } }
 
     .comp-card {
       position: relative;
@@ -623,13 +729,30 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 34px 32px;
+      box-shadow: inset 0 1px 0 var(--hairline);
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
+    /* an accent rule down the index edge, drawn short and centred */
+    .comp-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 28%;
+      bottom: 28%;
+      width: 2px;
+      border-radius: 0 2px 2px 0;
+      background: linear-gradient(180deg, transparent, var(--accent), transparent);
+      opacity: 0.5;
+      transition: opacity 0.2s ease, top 0.2s ease, bottom 0.2s ease;
+    }
+
+    .comp-card:hover::before { opacity: 1; top: 14%; bottom: 14%; }
+
     .comp-card:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow-lift);
-      border-color: var(--border-str);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), var(--glow-accent);
+      border-color: rgba(126, 166, 221, 0.4);
     }
 
     .comp-card .big-num {
@@ -638,10 +761,14 @@
       right: 10px;
       font-size: 120px;
       font-weight: 800;
-      color: rgba(255, 255, 255, 0.05);
+      color: rgba(185, 209, 239, 0.07);
       letter-spacing: -0.04em;
       line-height: 1;
       pointer-events: none;
+    }
+
+    @media (max-width: 640px) {
+      .comp-card .big-num { font-size: 84px; top: -8px; right: 6px; color: rgba(255, 255, 255, 0.04); }
     }
 
     .comp-index {
@@ -662,6 +789,8 @@
     }
 
     .comp-card p { position: relative; color: var(--text-dim); font-size: 15px; line-height: 1.65; }
+
+    @media (max-width: 640px) { .comp-card p { font-size: 15.5px; } }
 
     /* ─── TEAM ─── */
     .team-grid {
@@ -685,7 +814,7 @@
       overflow: hidden;
       margin: 0 auto 22px;
       background: var(--surface);
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(126, 166, 221, 0.18);
       outline: 1px solid var(--border-str);
       outline-offset: 5px;
       transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -693,7 +822,7 @@
 
     .member:hover .member-photo {
       transform: translateY(-4px);
-      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(126, 166, 221, 0.45);
     }
 
     .member-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
@@ -718,13 +847,13 @@
     .cta-band {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
+      background: linear-gradient(135deg, #35547f 0%, var(--navy-700) 42%, var(--navy-900) 100%);
       border: 1px solid var(--border-str);
       color: #fff;
       border-radius: 28px;
       padding: 64px 48px;
       text-align: center;
-      box-shadow: var(--shadow-lift);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), var(--shadow-lift);
     }
 
     .cta-band::after {
@@ -742,7 +871,7 @@
 
     .cta-band > * { position: relative; z-index: 1; }
 
-    .cta-band h2 { color: #fff; font-size: clamp(24px, 3.6vw, 34px); line-height: 1.2; }
+    .cta-band h2 { color: #fff; font-size: clamp(24px, 3.8vw, 40px); line-height: 1.18; letter-spacing: -0.015em; }
     .cta-band h2 em { font-style: normal; color: var(--accent-soft); }
 
     .cta-band p {
@@ -759,11 +888,22 @@
 
     /* ─── FOOTER ─── */
     .site-footer {
+      position: relative;
       background: #050a13;
       border-top: 1px solid var(--border);
       color: rgba(255, 255, 255, 0.8);
       padding: 4rem 0 calc(1.5rem + env(safe-area-inset-bottom));
       font-size: 0.92rem;
+    }
+
+    .site-footer::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(126, 166, 221, 0.34), transparent);
     }
 
     .footer-grid {
@@ -812,7 +952,11 @@
     .footer-bottom a { color: var(--accent); font-weight: 600; }
     .footer-bottom a:hover { color: var(--accent-soft); }
 
-    @media (max-width: 640px) { .footer-bottom { flex-direction: column; text-align: center; } }
+    @media (max-width: 640px) {
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .footer-links { gap: 0 1.6rem; }
+      .footer-links a, .footer-bottom a { display: inline-block; padding: 11px 0; }
+    }
 
     /* ─── FLOATING STICKY CONTACT (mobile) ─── */
     .sticky-contact {
@@ -919,21 +1063,74 @@
 
     <!-- ─── HERO ─── -->
     <section class="hero">
-      <svg class="hero-eye" viewBox="0 0 900 620" fill="none" aria-hidden="true">
-        <g stroke="currentColor" stroke-width="1.1" opacity="0.55">
-          <path d="M60 310C210 120 420 40 620 120c120 48 200 130 220 190-60 90-190 200-380 220C280 546 130 450 60 310Z"/>
-          <path d="M130 310c130-150 300-215 470-150 105 40 175 108 195 150-55 78-165 172-330 190-160 17-275-70-335-190Z" opacity="0.75"/>
-          <path d="M250 310c90-96 190-140 285-116 78 20 133 66 155 116-38 62-110 128-225 140-115 12-180-52-215-140Z" opacity="0.55"/>
-        </g>
-        <g stroke="currentColor" stroke-width="1.1" opacity="0.65">
-          <circle cx="520" cy="310" r="128"/>
-          <circle cx="520" cy="310" r="96" opacity="0.7"/>
-          <circle cx="520" cy="310" r="168" stroke-dasharray="3 9" opacity="0.5"/>
-        </g>
-        <circle cx="520" cy="310" r="56" fill="currentColor" opacity="0.22"/>
-        <circle cx="520" cy="310" r="56" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-        <g stroke="currentColor" stroke-width="1" opacity="0.4">
-          <path d="M520 108v58M520 454v58M318 310h58M664 310h58"/>
+      <div class="hero-grid" aria-hidden="true"></div>
+
+      <svg class="hero-lens" viewBox="0 0 900 620" fill="none" aria-hidden="true">
+        <defs>
+          <!-- the light the iris sits in -->
+          <radialGradient id="lens-core" cx="450" cy="310" r="220" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#7ea6dd" stop-opacity="0.42"/>
+            <stop offset="40%"  stop-color="#3d5b82" stop-opacity="0.20"/>
+            <stop offset="100%" stop-color="#21345f" stop-opacity="0"/>
+          </radialGradient>
+          <!-- glass, not a plug: bright core falling to a darker rim -->
+          <radialGradient id="iris-fill" cx="450" cy="310" r="132" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#7ea6dd" stop-opacity="0.2"/>
+            <stop offset="52%"  stop-color="#2c4570" stop-opacity="0.28"/>
+            <stop offset="100%" stop-color="#080e1a" stop-opacity="0.45"/>
+          </radialGradient>
+          <!-- line work fades toward the frame instead of stopping dead -->
+          <radialGradient id="edge-fade" cx="450" cy="310" r="320" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#fff" stop-opacity="1"/>
+            <stop offset="58%"  stop-color="#fff" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+          </radialGradient>
+          <mask id="lens-fade">
+            <rect x="0" y="0" width="900" height="620" fill="url(#edge-fade)"/>
+          </mask>
+          <!-- the aperture: iris cropped by the lens outline -->
+          <clipPath id="lens-clip">
+            <path d="M150 310A387.9 387.9 0 0 1 750 310A387.9 387.9 0 0 1 150 310Z"/>
+          </clipPath>
+        </defs>
+
+        <g mask="url(#lens-fade)">
+          <circle cx="450" cy="310" r="220" fill="url(#lens-core)"/>
+
+          <!-- instrument dial -->
+          <g class="dial" stroke="currentColor" opacity="0.5">
+            <circle cx="450" cy="310" r="204" stroke-width="1" opacity="0.42"/>
+            <path stroke-width="1" opacity="0.5" d="M646.0 310.0L654.0 310.0M644.3 335.6L652.3 336.6M639.3 360.7L647.0 362.8M631.1 385.0L638.5 388.1M619.7 408.0L626.7 412.0M605.5 429.3L611.8 434.2M588.6 448.6L594.2 454.2M569.3 465.5L574.2 471.8M548.0 479.7L552.0 486.7M525.0 491.1L528.1 498.5M500.7 499.3L502.8 507.0M475.6 504.3L476.6 512.3M450.0 506.0L450.0 514.0M424.4 504.3L423.4 512.3M399.3 499.3L397.2 507.0M375.0 491.1L371.9 498.5M352.0 479.7L348.0 486.7M330.7 465.5L325.8 471.8M311.4 448.6L305.8 454.2M294.5 429.3L288.2 434.2M280.3 408.0L273.3 412.0M268.9 385.0L261.5 388.1M260.7 360.7L253.0 362.8M255.7 335.6L247.7 336.6M254.0 310.0L246.0 310.0M255.7 284.4L247.7 283.4M260.7 259.3L253.0 257.2M268.9 235.0L261.5 231.9M280.3 212.0L273.3 208.0M294.5 190.7L288.2 185.8M311.4 171.4L305.8 165.8M330.7 154.5L325.8 148.2M352.0 140.3L348.0 133.3M375.0 128.9L371.9 121.5M399.3 120.7L397.2 113.0M424.4 115.7L423.4 107.7M450.0 114.0L450.0 106.0M475.6 115.7L476.6 107.7M500.7 120.7L502.8 113.0M525.0 128.9L528.1 121.5M548.0 140.3L552.0 133.3M569.3 154.5L574.2 148.2M588.6 171.4L594.2 165.8M605.5 190.7L611.8 185.8M619.7 212.0L626.7 208.0M631.1 235.0L638.5 231.9M639.3 259.3L647.0 257.2M644.3 284.4L652.3 283.4"/>
+            <path stroke-width="1.2" opacity="0.85" d="M640.0 310.0L660.0 310.0M584.4 444.4L598.5 458.5M450.0 500.0L450.0 520.0M315.6 444.4L301.5 458.5M260.0 310.0L240.0 310.0M315.6 175.6L301.5 161.5M450.0 120.0L450.0 100.0M584.4 175.6L598.5 161.5"/>
+          </g>
+
+          <!-- iris, cropped to the lens -->
+          <g clip-path="url(#lens-clip)">
+            <circle cx="450" cy="310" r="132" fill="url(#iris-fill)"/>
+            <g stroke="currentColor" fill="none">
+              <circle cx="450" cy="310" r="132" stroke-width="1.1" opacity="0.7"/>
+              <circle cx="450" cy="310" r="104" stroke-width="1" stroke-dasharray="2 10" opacity="0.55"/>
+              <circle cx="450" cy="310" r="76" stroke-width="1" opacity="0.45"/>
+            </g>
+          </g>
+
+          <!-- vesica arcs, struck from the same centre -->
+          <g stroke="currentColor" fill="none" stroke-width="1.1">
+            <path d="M150 310A387.9 387.9 0 0 1 750 310A387.9 387.9 0 0 1 150 310Z" opacity="0.75"/>
+            <path d="M218 310A299.7 299.7 0 0 1 682 310A299.7 299.7 0 0 1 218 310Z" opacity="0.4"/>
+            <path d="M286 310A211.4 211.4 0 0 1 614 310A211.4 211.4 0 0 1 286 310Z" opacity="0.22"/>
+          </g>
+
+          <!-- pupil -->
+          <g class="pupil-glow">
+            <circle cx="450" cy="310" r="46" fill="#7ea6dd" opacity="0.16"/>
+            <circle cx="450" cy="310" r="30" fill="#7ea6dd" opacity="0.3"/>
+            <circle cx="450" cy="310" r="30" stroke="currentColor" stroke-width="1.2" opacity="0.65"/>
+          </g>
+
+          <!-- sight lines -->
+          <path stroke="currentColor" stroke-width="1" opacity="0.3"
+                d="M450 0v96M450 524v96M0 310h214M686 310h214"/>
         </g>
       </svg>
 
@@ -1092,27 +1289,20 @@
           <div class="comp-card reveal">
             <span class="big-num" aria-hidden="true">01</span>
             <span class="comp-index">/ 01</span>
-            <h3>Securities Lending &amp; Borrowing</h3>
-            <p>Lending agreements, repo markets, collateral management, and reinvestment risk.</p>
+            <h3>Securities Finance</h3>
+            <p>Lending agreements, repo markets, collateral management, and reinvestment advisory.</p>
           </div>
 
           <div class="comp-card reveal">
             <span class="big-num" aria-hidden="true">02</span>
             <span class="comp-index">/ 02</span>
-            <h3>Compliance &amp; Regulation</h3>
-            <p>FINRA guidance and applications, Written Supervisory Procedures, short-selling rules, and international regulatory frameworks.</p>
+            <h3>Compliance &amp; Regulatory</h3>
+            <p>FINRA guidance and applications, Written Supervisory Procedures, short-selling rules, margin, capital charges, and haircuts.</p>
           </div>
 
           <div class="comp-card reveal">
             <span class="big-num" aria-hidden="true">03</span>
             <span class="comp-index">/ 03</span>
-            <h3>Structure &amp; Business Analysis</h3>
-            <p>Quantifying losses and supporting valuation analysis in complex financial disputes.</p>
-          </div>
-
-          <div class="comp-card reveal">
-            <span class="big-num" aria-hidden="true">04</span>
-            <span class="comp-index">/ 04</span>
             <h3>Risk Management</h3>
             <p>Counterparty risk, margin requirements, collateral exposure, and market volatility.</p>
           </div>
@@ -1143,30 +1333,6 @@
       </div>
     </section>
 
-    <!-- ─── TEAM ─── -->
-    <section id="team" class="section">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <span class="kicker">Meet Our Team</span>
-          <h2>Experienced Advisors. <em>Technical Market Expertise.</em></h2>
-        </div>
-
-        <div class="team-grid">
-          <div class="member reveal">
-            <div class="member-photo"><img src="1665069782900.jpg" alt="Anthony Venditti"></div>
-            <h3 class="member-name">Anthony Venditti</h3>
-            <p class="member-role">Chief Executive Officer</p>
-          </div>
-
-          <div class="member reveal">
-            <div class="member-photo"><img src="IMG_5465.jpg" alt="Indraneel Vaka"></div>
-            <h3 class="member-name">Indraneel Vaka</h3>
-            <p class="member-role">Associate</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ─── CTA BAND ─── -->
     <section class="cta-section">
       <div class="wrap">
@@ -1178,6 +1344,30 @@
           </p>
           <div class="hero-ctas">
             <a href="mailto:TV@TPTLS.com" class="btn btn-primary">Contact TPLS <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TEAM ─── -->
+    <section id="team" class="section">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="kicker">Meet Our Team</span>
+          <h2>Experienced Advisors. <em>Technical Market Expertise.</em></h2>
+        </div>
+
+        <div class="team-grid">
+          <div class="member reveal">
+            <div class="member-photo"><img src="1665069782900.jpg" alt="Anthony Venditti" width="400" height="400" loading="lazy" decoding="async"></div>
+            <h3 class="member-name">Anthony Venditti</h3>
+            <p class="member-role">Chief Executive Officer</p>
+          </div>
+
+          <div class="member reveal">
+            <div class="member-photo"><img src="IMG_5465-800.jpg" alt="Indraneel Vaka" width="800" height="533" loading="lazy" decoding="async"></div>
+            <h3 class="member-name">Indraneel Vaka</h3>
+            <p class="member-role">Associate</p>
           </div>
         </div>
       </div>
