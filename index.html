@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#080e1a" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%23080e1a'/><g fill='%237ea6dd'><rect x='5' y='7' width='12' height='5' opacity='.45'/><rect x='5' y='15' width='21' height='5' opacity='.72'/><rect x='5' y='23' width='30' height='5'/></g><rect x='5' y='31' width='30' height='1.5' fill='%23eef2f6' opacity='.5'/></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='8' fill='%23080e1a'/><ellipse cx='20' cy='20' rx='15' ry='12' fill='%23a9bbcf'/><circle cx='20' cy='20' r='7.5' fill='%234a74c8'/><circle cx='25.5' cy='16' r='3' fill='%23fff'/></svg>" />
   <title>Transparence Lending Solutions LLC | TPLS</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,8 +17,8 @@
 
        Colour and type follow the parent; the layout does not. Where the
        parent uses pill buttons and soft rounded cards, TPLS uses square
-       corners and hairline rules, and carries its own mark: three ledger
-       bars rather than the parent's eye.
+       corners and hairline rules. The mark is the Transparence eye in a
+       blue-to-steel gradient, locked up with the TPLS wordmark.
        ========================================================================== */
 
     :root {
@@ -103,7 +103,7 @@
     .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; }
     @media (max-width: 640px) { .wrap { padding: 0 20px; } }
 
-    /* small-caps label used for kickers, indexes and the ticker */
+    /* small-caps label used for kickers and indexes */
     .label {
       font-family: var(--sans);
       font-size: 11.5px;
@@ -179,12 +179,8 @@
 
     .nav-brand { display: inline-flex; align-items: center; gap: 14px; flex: none; }
 
-    /* ledger mark: bars step up in weight, like a rising rate */
-    .brand-mark { width: 40px; height: auto; flex: none; }
-    .bar   { fill: var(--accent-soft); }
-    .bar-1 { opacity: 0.4; }
-    .bar-2 { opacity: 0.7; }
-    .bar-base { fill: var(--text); opacity: 0.45; }
+    /* the eye mark carries its own gradient colours (see the symbol) */
+    .brand-mark { width: 66px; height: auto; flex: none; }
 
     .brand-text {
       display: flex;
@@ -202,14 +198,14 @@
       color: var(--text);
     }
 
-    .brand-name em { font-style: normal; color: var(--accent); }
+    .brand-name em { font-style: normal; color: #93aec9; }
 
     .brand-sub {
       font-size: 9.5px;
       font-weight: 600;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--text-mute);
+      color: var(--text-dim);
       margin-top: 4px;
       white-space: nowrap;
       display: none;
@@ -393,42 +389,6 @@
 
     @media (max-width: 640px) {
       .hero { min-height: clamp(480px, 74dvh, 640px); padding: 72px 0 80px; }
-    }
-
-    /* ─── TICKER ─── */
-    .ticker {
-      background: var(--bg-alt);
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-      padding: 16px 0;
-    }
-
-    .ticker-track { display: flex; width: max-content; animation: ticker 48s linear infinite; }
-
-    .ticker span {
-      font-size: 11.5px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-mute);
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .ticker span::after {
-      content: "";
-      width: 5px;
-      height: 5px;
-      transform: rotate(45deg);
-      background: var(--accent);
-      margin: 0 28px;
-      opacity: 0.8;
-    }
-
-    @keyframes ticker {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
     }
 
     /* ─── SECTIONS ─── */
@@ -818,7 +778,7 @@
     }
 
     @media (max-width: 640px) {
-      .brand-mark { width: 34px; }
+      .brand-mark { width: 54px; }
       .hero-ctas { flex-direction: column; }
       .hero-ctas .btn { width: 100%; }
     }
@@ -833,31 +793,50 @@
     .reveal.in { opacity: 1; transform: none; }
 
     @media (prefers-reduced-motion: reduce) {
-      .ticker-track { animation: none; }
       .reveal { opacity: 1; transform: none; }
       *, *::before, *::after {
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
       }
     }
+
+    /* ─── PRINT / PDF ─── */
+    @media print {
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .reveal { opacity: 1; transform: none; }
+      .site-header { position: static; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .sticky-contact, .menu-drawer, .menu-backdrop { display: none; }
+      .section, .cta-section, .cap-card, .comp-card, .feat-visual, .member { break-inside: avoid; }
+      .section, .cta-section { padding: 80px 0; }
+      .hero { min-height: 0; padding: 120px 0; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- TPLS ledger mark: three bars stepping up over a baseline -->
+  <!-- TPLS eye mark: the Transparence eye in a blue-to-steel gradient -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="tpls-mark" viewBox="0 0 40 34">
-      <rect class="bar bar-1" x="0" y="2"  width="13" height="5"/>
-      <rect class="bar bar-2" x="0" y="11" width="25" height="5"/>
-      <rect class="bar bar-3" x="0" y="20" width="38" height="5"/>
-      <rect class="bar-base"  x="0" y="30" width="38" height="1.2"/>
+    <symbol id="tpls-mark" viewBox="56 104 496 300">
+      <defs>
+        <linearGradient id="eye-g1" x1="60" y1="0" x2="510" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4a78d0"/><stop offset="1" stop-color="#9db3ca"/></linearGradient>
+        <linearGradient id="eye-g2" x1="99" y1="0" x2="549" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#9db3ca"/><stop offset="1" stop-color="#4a78d0"/></linearGradient>
+        <linearGradient id="eye-g3" x1="58" y1="0" x2="488" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4a78d0"/><stop offset="1" stop-color="#9db3ca"/></linearGradient>
+      </defs>
+      <path fill="url(#eye-g1)" d="M60.04,260.33c100.37,42.32,213.61-101.69,321.56-42.97,0,0-26.05-32.74-119.46-23.74,0,0,139.22-59.75,247.91,55.66-53.52-114.49-195.73-117.94-287.43-58.11,0,0-95.21,72.84-162.58,69.16Z"/>
+      <path fill="url(#eye-g2)" d="M549.07,268.61c-100.37-42.32-213.61,101.69-321.56,42.97,0,0,26.05,32.74,119.46,23.74,0,0-139.22,59.75-247.91-55.66,53.52,114.49,195.73,117.94,287.43,58.11,0,0,95.21-72.84,162.58-69.16Z"/>
+      <path fill="url(#eye-g3)" d="M59.33,189.28c4.69,.12,9.36,.36,14.02,.54,4.67,.03,9.32,.13,13.95,.14,9.27-.23,18.49-.52,27.54-1.84,9.08-1.03,17.95-3.13,26.68-5.51,4.33-1.42,8.69-2.58,12.94-4.26l6.4-2.36,6.34-2.62c16.88-7.05,33.44-15.39,50.1-23.67l25.05-12.44,6.29-3.08c2.12-1.02,4.15-2.06,6.35-3.05l6.51-3c2.17-1.01,4.33-2.02,6.57-2.9,4.45-1.77,8.84-3.69,13.39-5.22l6.78-2.41c2.28-.76,4.58-1.44,6.88-2.15,9.18-2.83,18.57-5.01,28.03-6.76,4.76-.74,9.5-1.58,14.3-2.03l3.59-.41,1.79-.19,1.8-.11,7.21-.46c2.4-.11,4.81-.12,7.22-.18,1.2-.01,2.4-.07,3.61-.05l3.61,.08c4.81,.06,9.61,.44,14.4,.8,19.14,1.79,37.91,6.24,55.68,12.79,8.89,3.27,17.56,7.01,26.03,11,4.25,1.97,8.45,4,12.69,5.9,4.24,1.89,8.49,3.79,13.13,4.51-2.33,.09-4.74-.11-7.04-.61-1.17-.19-2.32-.48-3.47-.75-1.16-.26-2.29-.56-3.43-.87-4.54-1.25-9.03-2.64-13.48-4.02-8.92-2.77-17.8-5.43-26.75-7.65-17.87-4.49-35.99-7.24-54.12-7.75-4.53-.05-9.06-.15-13.58,.08l-3.39,.1c-1.13,.03-2.26,.14-3.39,.21-2.26,.17-4.51,.28-6.76,.49-4.49,.51-8.99,.94-13.45,1.67-4.48,.57-8.9,1.53-13.34,2.36-1.11,.19-2.21,.49-3.31,.74l-3.3,.77c-2.2,.52-4.41,.97-6.58,1.62l-6.54,1.81-1.63,.45-1.62,.52-3.23,1.05c-2.15,.71-4.32,1.34-6.47,2.08l-6.39,2.33c-4.29,1.46-8.44,3.33-12.66,5.02-2.12,.81-4.19,1.77-6.26,2.71l-6.22,2.81c-4.16,1.9-8.39,4.01-12.6,5.98-8.45,3.95-16.86,8-25.37,11.89-8.5,3.91-17.05,7.79-25.72,11.46-8.68,3.67-17.46,7.21-26.49,10.28l-6.77,2.28-6.9,1.98c-4.56,1.42-9.31,2.35-13.97,3.41-1.16,.29-2.36,.45-3.54,.65l-3.56,.57c-2.38,.36-4.72,.84-7.13,.99l-7.16,.65c-.6,.05-1.19,.12-1.79,.14l-1.79,.05-3.58,.09c-19.12,.43-37.89-2.3-56.1-6.64Z"/>
+      <ellipse fill="#a9bbcf" cx="313.76" cy="261.17" rx="62.04" ry="49.53" transform="rotate(-3.18 313.76 261.17)"/>
+      <ellipse fill="none" stroke="#fff" stroke-opacity="0.35" cx="313.76" cy="261.17" rx="48.41" ry="38.65"/>
+      <g fill="#fff" opacity="0.35"><polygon points="334.56 274.54 355.54 296.23 333.85 275.24 334.56 274.54 334.56 274.54"/><polygon points="292.88 275.85 271.19 296.83 292.17 275.14 292.88 275.85 292.88 275.85"/><polygon points="332.28 240.98 353.97 220 332.99 241.69 332.28 240.98 332.28 240.98"/><polygon points="289.97 252.36 261.32 261.82 289.65 251.42 289.97 252.36 289.97 252.36"/><polygon points="297.85 241.08 270.9 227.5 298.28 240.18 297.85 241.08 297.85 241.08"/><polygon points="312.45 237.25 310.61 207.13 313.45 237.17 312.45 237.25 312.45 237.25"/><polygon points="313.8 284.37 314.22 314.55 312.8 284.4 313.8 284.37 313.8 284.37"/><path d="M339.16,252.74l29.46,6.54-29.66-5.56c-.65-.13-.45-1.12,.2-.98h0Z"/></g>
+      <circle fill="#4a74c8" cx="313.76" cy="261.17" r="30.79"/>
+      <circle fill="#fff" cx="336.54" cy="244.65" r="11.96"/>
     </symbol>
   </svg>
 
   <header class="site-header">
     <nav class="nav">
       <a href="#" class="nav-brand" aria-label="TPLS Home">
-        <svg class="brand-mark" viewBox="0 0 40 34" aria-hidden="true"><use href="#tpls-mark"/></svg>
+        <svg class="brand-mark" viewBox="0 0 496 300" aria-hidden="true"><use href="#tpls-mark"/></svg>
         <span class="brand-text">
           <span class="brand-name">TP<em>LS</em></span>
           <span class="brand-sub">Transparence Lending Solutions LLC</span>
@@ -909,28 +888,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ─── TICKER ─── -->
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track">
-        <span>Securities Lending</span>
-        <span>Repo Markets</span>
-        <span>Portfolio Optimization</span>
-        <span>FINRA Approvals</span>
-        <span>Expert Witness</span>
-        <span>Risk Advisory</span>
-        <span>Collateral Management</span>
-        <span>Regulatory Structuring</span>
-        <span>Securities Lending</span>
-        <span>Repo Markets</span>
-        <span>Portfolio Optimization</span>
-        <span>FINRA Approvals</span>
-        <span>Expert Witness</span>
-        <span>Risk Advisory</span>
-        <span>Collateral Management</span>
-        <span>Regulatory Structuring</span>
-      </div>
-    </div>
 
     <!-- ─── STRATEGIC OVERVIEW ─── -->
     <section class="section">
@@ -1142,7 +1099,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <span class="nav-brand">
-            <svg class="brand-mark" viewBox="0 0 40 34" aria-hidden="true"><use href="#tpls-mark"/></svg>
+            <svg class="brand-mark" viewBox="0 0 496 300" aria-hidden="true"><use href="#tpls-mark"/></svg>
             <span class="brand-text">
               <span class="brand-name">TP<em>LS</em></span>
               <span class="brand-sub">Transparence Lending Solutions LLC</span>
